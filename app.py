@@ -14,7 +14,7 @@ scaler = pickle.load(open("scaler.pkl", "rb"))
 columns = pickle.load(open("columns.pkl", "rb"))
 
 # Load dataset (for graphs)
-data = pd.read_csv("C:\\Users\\Visla\\Downloads\\Files\\Project_file\\Project-5\\House Price India.csv")
+data = pd.read_csv("House Price India.csv")
 
 st.set_page_config(page_title="House Price Predictor", layout="wide")
 
