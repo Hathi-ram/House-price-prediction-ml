@@ -18,7 +18,7 @@ data = pd.read_csv("C:\\Users\\Visla\\Downloads\\Files\\Project_file\\Project-5\
 
 st.set_page_config(page_title="House Price Predictor", layout="wide")
 
-st.title("🏠 Advanced House Price Prediction System")
+st.title(" Advanced House Price Prediction System")
 
 # =========================
 # INPUT SECTION
@@ -90,7 +90,7 @@ input_scaled = scaler.transform(input_df)
 # =========================
 # PREDICTION
 # =========================
-st.subheader("💰 Prediction")
+st.subheader(" Prediction")
 
 if st.button("Predict Price"):
     prediction = model.predict(input_scaled)
@@ -99,7 +99,7 @@ if st.button("Predict Price"):
 # =========================
 # MAP
 # =========================
-st.subheader("📍 Location Map")
+st.subheader(" Location Map")
 
 map_data = pd.DataFrame({
     'lat': [lat],
@@ -110,7 +110,7 @@ st.map(map_data)
 # =========================
 # GRAPHS
 # =========================
-st.subheader("📊 Data Visualizations")
+st.subheader(" Data Visualizations")
 
 if st.checkbox("Show Price Distribution"):
     fig, ax = plt.subplots()
@@ -132,7 +132,7 @@ if st.checkbox("Show Correlation Heatmap"):
 # =========================
 # SHAP EXPLANATION
 # =========================
-st.subheader("🧠 Model Explainability (SHAP)")
+st.subheader(" Model Explainability (SHAP)")
 
 try:
     explainer = shap.Explainer(model)
