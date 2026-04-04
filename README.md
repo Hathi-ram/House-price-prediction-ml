@@ -33,3 +33,16 @@ This project predicts house prices using machine learning techniques. It uses ad
 ---
 
 ## 📂 Project Structure
+house-price-predictor/
+│
+├── app.py
+├── model.pkl
+├── scaler.pkl
+├── columns.pkl
+├── House Price India.csv
+├── requirements.txt
+├── README.md
+│
+└── screenshots/
+    ├── home.png
+    ├── prediction.png
