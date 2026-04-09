@@ -19,7 +19,7 @@ This project predicts house prices using machine learning techniques. It uses ad
 
 ---
 
-## Features
+### Features
 - Predict house prices in real-time
 - Interactive web application using Streamlit
 - Data visualization (graphs & heatmap)
