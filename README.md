@@ -1,7 +1,7 @@
-### 🏠 House Price Prediction using Machine Learning
+###  House Price Prediction using Machine Learning
 
-## 🌐 Live Demo
-👉 [https://your-app-link.streamlit.app](https://house-price-prediction-ml-app.streamlit.app/)
+## Live Demo
+ [https://your-app-link.streamlit.app](https://house-price-prediction-ml-app.streamlit.app/)
 
 Experience the live House Price Prediction application:
 
@@ -46,7 +46,7 @@ This project predicts house prices using machine learning techniques. It uses ad
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 house-price-predictor/
 │
 ├── app.py
