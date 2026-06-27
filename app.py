@@ -26,7 +26,7 @@ data = pd.read_csv("House Price India.csv")
 # --------------------------------
 # Title
 # --------------------------------
-st.title("🏠 House Price Prediction System")
+st.title("House Price Prediction System")
 
 st.markdown("""
 ### Advanced Machine Learning Project using XGBoost  
@@ -60,7 +60,7 @@ Location shown is based on similar properties from the dataset and is for refere
 # --------------------------------
 # Sidebar Inputs
 # --------------------------------
-st.sidebar.header("🏡 Enter Property Details")
+st.sidebar.header("Enter Property Details")
 
 # Basic Info
 st.sidebar.markdown("### Basic Information")
@@ -159,12 +159,12 @@ input_scaled = scaler.transform(input_data)
 # --------------------------------
 # Prediction Button
 # --------------------------------
-if st.button("🔍 Predict House Price"):
+if st.button(" Predict House Price"):
 
     prediction = model.predict(input_scaled)[0]
 
     # Prediction Result
-    st.subheader("📌 Prediction Result")
+    st.subheader("Prediction Result")
 
     col1, col2 = st.columns(2)
 
@@ -177,12 +177,12 @@ if st.button("🔍 Predict House Price"):
         st.info(f"Estimated Range: ₹ {low:,.0f} - ₹ {high:,.0f}")
 
     # Model Performance
-    st.subheader("📊 Model Performance")
+    st.subheader("Model Performance")
 
     st.metric("Training Accuracy", "97.27%")
 
     # Feature Importance
-    st.subheader("🔥 Feature Importance")
+    st.subheader(" Feature Importance")
 
     try:
         importance = model.feature_importances_
@@ -204,7 +204,7 @@ if st.button("🔍 Predict House Price"):
         st.info("Feature importance not available.")
 
     # SHAP Explainability
-    st.subheader("🧠 Why this prediction?")
+    st.subheader("Why this prediction?")
 
     try:
         explainer = shap.Explainer(model)
@@ -218,7 +218,7 @@ if st.button("🔍 Predict House Price"):
         st.info("SHAP explanation currently unavailable.")
 
     # Similar Property Location
-    st.subheader("📍 Similar Property Reference Location")
+    st.subheader("Similar Property Reference Location")
 
     try:
         data["difference"] = (
@@ -241,15 +241,15 @@ if st.button("🔍 Predict House Price"):
 
         st.map(map_data)
 
-        st.write(f"📌 Latitude: {latitude}")
-        st.write(f"📌 Longitude: {longitude}")
+        st.write(f" Latitude: {latitude}")
+        st.write(f" Longitude: {longitude}")
 
         # Google Maps Links
         view_url = f"https://www.google.com/maps/@{latitude},{longitude},15z"
         direction_url = f"https://www.google.com/maps/dir/?api=1&destination={latitude},{longitude}"
 
-        st.markdown(f"[🗺 View Property Location]({view_url})")
-        st.markdown(f"[🚗 Get Directions]({direction_url})")
+        st.markdown(f"[ View Property Location]({view_url})")
+        st.markdown(f"[Get Directions]({direction_url})")
 
         st.warning("""
 Location shown is based on the nearest similar property available in the training dataset.
@@ -262,7 +262,7 @@ This location is for reference only and may not represent your exact local area.
 # --------------------------------
 # Dataset Overview
 # --------------------------------
-st.subheader("📂 Dataset Overview")
+st.subheader("Dataset Overview")
 
 col1, col2, col3 = st.columns(3)
 
@@ -279,5 +279,5 @@ with col3:
 # Footer
 # --------------------------------
 st.markdown("---")
-st.markdown("🚀 Built with XGBoost, Streamlit, SHAP, and Google Maps Integration")
+st.markdown(" Built with XGBoost, Streamlit, SHAP, and Google Maps Integration")
 st.markdown("Designed as an Advanced Internship-Level Machine Learning Project")
