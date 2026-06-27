@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
-import xgboost as xgb
+import shap
 
 # ----------------------------
 # Page Config
@@ -14,72 +14,84 @@ st.set_page_config(
 )
 
 # ----------------------------
-# Load Model and Data
+# Load Files
 # ----------------------------
-model = pickle.load(open("xgb_model.pkl", "rb"))
+model = pickle.load(open("model.pkl", "rb"))
+scaler = pickle.load(open("scaler.pkl", "rb"))
+columns = pickle.load(open("columns.pkl", "rb"))
+
 data = pd.read_csv("House Price India.csv")
 
 # ----------------------------
 # Title
 # ----------------------------
 st.title("🏠 House Price Prediction using Machine Learning")
-st.markdown("### Predict house prices with advanced XGBoost model")
+st.markdown("### Advanced XGBoost Model for Real Estate Price Estimation")
 
 # ----------------------------
-# Important Dataset Note
+# Dataset Warning
 # ----------------------------
 st.warning("""
-⚠ **Important Note**
+⚠ Important Note:
 
-This project uses an older historical housing dataset.
+This model is trained on an older historical housing dataset.
 
 Dataset limitations:
-- Mainly covers **Bengaluru, Karnataka**
-- Does not represent all Indian cities
-- Prices may appear lower than today’s market rates
-- Predictions are based on historical data only
+- Mainly covers Bengaluru, Karnataka.
+- Does not represent all Indian cities.
+- Prices may appear lower than current market values.
+- Predictions are based on historical records only.
 """)
 
 # ----------------------------
 # Sidebar Inputs
 # ----------------------------
-st.sidebar.header("Enter House Details")
+st.sidebar.header("Enter Property Details")
 
-bedrooms = st.sidebar.slider("Bedrooms", 1, 10, 3)
-bathrooms = st.sidebar.slider("Bathrooms", 1, 10, 2)
+bedrooms = st.sidebar.slider("Number of Bedrooms", 1, 10, 3)
+bathrooms = st.sidebar.slider("Number of Bathrooms", 1, 10, 2)
 living_area = st.sidebar.slider("Living Area (sq ft)", 500, 10000, 1500)
 lot_area = st.sidebar.slider("Lot Area (sq ft)", 500, 20000, 3000)
-floors = st.sidebar.slider("Floors", 1, 5, 2)
-condition = st.sidebar.slider("Condition", 1, 5, 3)
-grade = st.sidebar.slider("Grade", 1, 13, 7)
+floors = st.sidebar.slider("Number of Floors", 1, 5, 2)
+condition = st.sidebar.slider("House Condition", 1, 5, 3)
+grade = st.sidebar.slider("House Grade", 1, 13, 7)
 schools = st.sidebar.slider("Schools Nearby", 0, 10, 2)
 airport_distance = st.sidebar.slider("Distance from Airport (km)", 1, 100, 20)
 
 # ----------------------------
-# Prediction
+# Input Data
 # ----------------------------
-input_data = pd.DataFrame({
-    'number of bedrooms': [bedrooms],
-    'number of bathrooms': [bathrooms],
-    'living area': [living_area],
-    'lot area': [lot_area],
-    'number of floors': [floors],
-    'condition of the house': [condition],
-    'grade of the house': [grade],
-    'Number of schools nearby': [schools],
-    'Distance from the airport': [airport_distance]
-})
+input_dict = {
+    "number of bedrooms": bedrooms,
+    "number of bathrooms": bathrooms,
+    "living area": living_area,
+    "lot area": lot_area,
+    "number of floors": floors,
+    "condition of the house": condition,
+    "grade of the house": grade,
+    "Number of schools nearby": schools,
+    "Distance from the airport": airport_distance
+}
 
-prediction = model.predict(input_data)[0]
+input_data = pd.DataFrame([input_dict])
+
+# Align columns
+input_data = input_data.reindex(columns=columns, fill_value=0)
+
+# Scale input
+input_scaled = scaler.transform(input_data)
+
+# Predict
+prediction = model.predict(input_scaled)[0]
 
 # ----------------------------
-# Display Prediction
+# Prediction Output
 # ----------------------------
 st.subheader("Predicted House Price")
 
 st.success(f"₹ {prediction:,.0f}")
 
-# Price Range
+# Price range
 low = prediction * 0.9
 high = prediction * 1.1
 
@@ -94,63 +106,63 @@ accuracy = 97.27
 st.metric("Training Accuracy", f"{accuracy}%")
 
 # ----------------------------
-# Feature Importance (Best Visualization)
+# Feature Importance
 # ----------------------------
 st.subheader("Feature Importance")
 
-feature_names = input_data.columns
-importance = model.feature_importances_
+try:
+    importance = model.feature_importances_
 
-importance_df = pd.DataFrame({
-    "Feature": feature_names,
-    "Importance": importance
-}).sort_values(by="Importance", ascending=True)
+    importance_df = pd.DataFrame({
+        "Feature": input_data.columns,
+        "Importance": importance
+    }).sort_values(by="Importance", ascending=True)
 
-fig, ax = plt.subplots(figsize=(10, 6))
-ax.barh(importance_df["Feature"], importance_df["Importance"])
-ax.set_title("Most Important Features Affecting House Price")
-st.pyplot(fig)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.barh(importance_df["Feature"], importance_df["Importance"])
+    ax.set_title("Most Important Features Affecting Price")
+    st.pyplot(fig)
+
+except:
+    st.info("Feature importance not available for this model.")
 
 # ----------------------------
-# Location Map
+# SHAP Explainability
 # ----------------------------
-st.subheader("Property Location Map")
+st.subheader("Why this price? (SHAP Explainability)")
+
+try:
+    explainer = shap.Explainer(model)
+    shap_values = explainer(input_scaled)
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    shap.plots.waterfall(shap_values[0], show=False)
+    st.pyplot(fig)
+
+except:
+    st.info("SHAP explanation not available.")
+
+# ----------------------------
+# Property Location Map
+# ----------------------------
+st.subheader("Property Locations")
 
 st.map(data[['Lattitude', 'Longitude']])
 
 # ----------------------------
 # Dataset Overview
 # ----------------------------
-st.subheader("Dataset Information")
+st.subheader("Dataset Overview")
 
 col1, col2, col3 = st.columns(3)
 
-col1.metric("Total Houses", len(data))
+col1.metric("Total Properties", len(data))
 col2.metric("Total Features", len(data.columns))
-col3.metric("City Coverage", "Bengaluru")
+col3.metric("Location Coverage", "Bengaluru")
 
 # ----------------------------
 # Footer
 # ----------------------------
 st.markdown("---")
-st.markdown("Built for Machine Learning Project")
-st.markdown("Developed using XGBoost, Streamlit, and Real Estate Data Analysis")
-
-import shap
-
-st.subheader("Why this price? (SHAP Explainability)")
-
-try:
-    explainer = shap.TreeExplainer(model)
-    shap_values = explainer(input_data)
-
-    fig, ax = plt.subplots(figsize=(10, 5))
-    shap.plots.waterfall(
-        shap_values[0],
-        show=False
-    )
-
-    st.pyplot(fig)
-
-except Exception as e:
-    st.error("SHAP explanation could not be generated.")
+st.markdown("🚀 Internship-Level Machine Learning Project")
+st.markdown("Built with XGBoost, Streamlit, SHAP, and Real Estate Data Analysis")
