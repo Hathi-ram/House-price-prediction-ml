@@ -5,16 +5,16 @@ import matplotlib.pyplot as plt
 import shap
 
 # --------------------------------
-# Page Config
+# Page Configuration
 # --------------------------------
 st.set_page_config(
-    page_title="House Price Prediction",
+    page_title="House Price Prediction System",
     page_icon="🏠",
     layout="wide"
 )
 
 # --------------------------------
-# Load Files
+# Load Model and Files
 # --------------------------------
 model = pickle.load(open("model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
@@ -23,12 +23,12 @@ columns = pickle.load(open("columns.pkl", "rb"))
 data = pd.read_csv("House Price India.csv")
 
 # --------------------------------
-# Title
+# Title Section
 # --------------------------------
 st.title("🏠 House Price Prediction System")
 st.markdown("""
 ### Advanced Machine Learning Project using XGBoost  
-Predict real estate prices with explainable AI and smart property analysis.
+Predict property prices with intelligent analysis, explainable AI, and location-based insights.
 """)
 
 # --------------------------------
@@ -37,9 +37,18 @@ Predict real estate prices with explainable AI and smart property analysis.
 st.info("""
 ℹ **Project Note**
 
-This house price prediction system is built using a historical housing dataset.  
-As the dataset is based on older records, predicted prices may differ from current market values.  
-The model is intended for educational and analytical purposes and may not fully represent all real estate markets or cities.
+This application predicts house prices based on historical housing data using advanced machine learning techniques.
+
+### Key Highlights:
+✔ Built using **XGBoost Regressor** for high prediction accuracy  
+✔ Achieved **97.27% training accuracy**  
+✔ Uses important property features such as area, bedrooms, bathrooms, house quality, and nearby facilities  
+✔ Includes **Feature Importance Analysis** to understand major price factors  
+✔ Integrates **SHAP Explainability** for transparent model predictions  
+✔ Provides **similar property location mapping** with Google Maps navigation support  
+✔ Developed as an **internship-level real-world machine learning project**
+
+**Note:** Since the model is trained on older historical data, predicted prices may differ from current market values and may not fully represent all cities.
 """)
 
 # --------------------------------
@@ -114,7 +123,7 @@ airport_distance = st.sidebar.number_input(
 
 st.sidebar.markdown("---")
 st.sidebar.info("""
-Fill the property details and click **Predict House Price**  
+Fill all details and click **Predict House Price**
 to estimate the property value.
 """)
 
@@ -138,7 +147,7 @@ input_data = pd.DataFrame([input_dict])
 # Match training columns
 input_data = input_data.reindex(columns=columns, fill_value=0)
 
-# Scale data
+# Scale input
 input_scaled = scaler.transform(input_data)
 
 # --------------------------------
@@ -148,9 +157,7 @@ if st.button("🔍 Predict House Price"):
 
     prediction = model.predict(input_scaled)[0]
 
-    # --------------------------------
     # Prediction Result
-    # --------------------------------
     st.subheader("📌 Prediction Result")
 
     col1, col2 = st.columns(2)
@@ -163,16 +170,11 @@ if st.button("🔍 Predict House Price"):
         high = prediction * 1.1
         st.info(f"Estimated Range: ₹ {low:,.0f} - ₹ {high:,.0f}")
 
-    # --------------------------------
     # Model Performance
-    # --------------------------------
     st.subheader("📊 Model Performance")
-
     st.metric("Training Accuracy", "97.27%")
 
-    # --------------------------------
     # Feature Importance
-    # --------------------------------
     st.subheader("🔥 Feature Importance")
 
     try:
@@ -194,9 +196,7 @@ if st.button("🔍 Predict House Price"):
     except:
         st.info("Feature importance not available.")
 
-    # --------------------------------
     # SHAP Explainability
-    # --------------------------------
     st.subheader("🧠 Why this prediction?")
 
     try:
@@ -210,9 +210,7 @@ if st.button("🔍 Predict House Price"):
     except:
         st.info("SHAP explanation currently unavailable.")
 
-    # --------------------------------
     # Similar Property Location
-    # --------------------------------
     st.subheader("📍 Similar Property Location")
 
     try:
@@ -225,16 +223,26 @@ if st.button("🔍 Predict House Price"):
 
         nearest_house = data.sort_values("difference").head(1)
 
-        map_data = nearest_house[['Lattitude', 'Longitude']].rename(
-            columns={
-                "Lattitude": "lat",
-                "Longitude": "lon"
-            }
-        )
+        latitude = nearest_house["Lattitude"].values[0]
+        longitude = nearest_house["Longitude"].values[0]
+
+        map_data = pd.DataFrame({
+            "lat": [latitude],
+            "lon": [longitude]
+        })
 
         st.map(map_data)
 
-        st.success("Showing the nearest similar property location.")
+        st.write(f"📌 Latitude: {latitude}")
+        st.write(f"📌 Longitude: {longitude}")
+
+        google_maps_url = f"https://www.google.com/maps?q={latitude},{longitude}"
+
+        st.markdown(
+            f"[🗺 Open Location in Google Maps]({google_maps_url})"
+        )
+
+        st.success("Click the Google Maps link for directions.")
 
     except:
         st.info("Location data not available.")
@@ -259,5 +267,5 @@ with col3:
 # Footer
 # --------------------------------
 st.markdown("---")
-st.markdown("🚀 Built using XGBoost, Streamlit, and Explainable AI")
-st.markdown("Designed as an Internship-Level Machine Learning Project")
+st.markdown("🚀 Built using XGBoost, Streamlit, SHAP, and Google Maps Integration")
+st.markdown("Designed as an Advanced Internship-Level Machine Learning Project")
