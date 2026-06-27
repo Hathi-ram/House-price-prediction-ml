@@ -42,19 +42,19 @@ st.info("""
 This application predicts house prices using historical housing data and machine learning.
 
 ### Key Features:
-✔ Developed using **XGBoost Regressor**  
+✔ Built using **XGBoost Regressor**  
 ✔ Achieved **97.27% training accuracy**  
-✔ Uses important property parameters for price estimation  
+✔ Uses important property features like area, bedrooms, bathrooms, quality, and nearby facilities  
 ✔ Includes **Feature Importance Analysis**  
-✔ Includes **SHAP Explainability** for transparent predictions  
+✔ Includes **SHAP Explainability** for transparent model predictions  
 ✔ Shows **similar property reference location**  
-✔ Provides **Google Maps integration** for easy viewing  
-✔ Built as an **internship-level real-world machine learning project**
+✔ Provides **Google Maps integration** for location viewing and navigation  
+✔ Built as an internship-level real-world machine learning project  
 
 **Important:**  
 This model is trained on historical housing records.  
-Predicted prices may differ from current market conditions.  
-Location shown is based on similar properties from the dataset and is for reference purposes only.
+Predicted prices may differ from current market values.  
+Location shown is based on similar properties from the dataset and is for reference only.
 """)
 
 # --------------------------------
@@ -130,7 +130,7 @@ airport_distance = st.sidebar.number_input(
 st.sidebar.markdown("---")
 st.sidebar.info("""
 Fill the details and click **Predict House Price**
-to estimate the house value.
+to estimate the property value.
 """)
 
 # --------------------------------
@@ -233,7 +233,7 @@ if st.button("🔍 Predict House Price"):
         latitude = nearest_house["Lattitude"].values[0]
         longitude = nearest_house["Longitude"].values[0]
 
-        # Map
+        # Show Map
         map_data = pd.DataFrame({
             "lat": [latitude],
             "lon": [longitude]
@@ -244,12 +244,12 @@ if st.button("🔍 Predict House Price"):
         st.write(f"📌 Latitude: {latitude}")
         st.write(f"📌 Longitude: {longitude}")
 
-        # Google Maps Search Link
-        google_maps_url = f"https://www.google.com/maps/search/?api=1&query={latitude},{longitude}"
+        # Google Maps Links
+        view_url = f"https://www.google.com/maps/@{latitude},{longitude},15z"
+        direction_url = f"https://www.google.com/maps/dir/?api=1&destination={latitude},{longitude}"
 
-        st.markdown(
-            f"[🗺 View this property location in Google Maps]({google_maps_url})"
-        )
+        st.markdown(f"[🗺 View Property Location]({view_url})")
+        st.markdown(f"[🚗 Get Directions]({direction_url})")
 
         st.warning("""
 Location shown is based on the nearest similar property available in the training dataset.
