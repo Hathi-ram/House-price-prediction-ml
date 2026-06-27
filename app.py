@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
 import shap
+import urllib.parse
 
 # --------------------------------
 # Page Configuration
@@ -14,7 +15,7 @@ st.set_page_config(
 )
 
 # --------------------------------
-# Load Model and Files
+# Load Files
 # --------------------------------
 model = pickle.load(open("model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
@@ -23,12 +24,13 @@ columns = pickle.load(open("columns.pkl", "rb"))
 data = pd.read_csv("House Price India.csv")
 
 # --------------------------------
-# Title Section
+# Title
 # --------------------------------
 st.title("🏠 House Price Prediction System")
+
 st.markdown("""
 ### Advanced Machine Learning Project using XGBoost  
-Predict property prices with intelligent analysis, explainable AI, and location-based insights.
+Predict property prices using intelligent machine learning models, feature analysis, and location support.
 """)
 
 # --------------------------------
@@ -37,42 +39,44 @@ Predict property prices with intelligent analysis, explainable AI, and location-
 st.info("""
 ℹ **Project Note**
 
-This application predicts house prices based on historical housing data using advanced machine learning techniques.
+This application predicts house prices using a historical housing dataset and machine learning techniques.
 
 ### Key Highlights:
-✔ Built using **XGBoost Regressor** for high prediction accuracy  
+✔ Built using **XGBoost Regressor**  
 ✔ Achieved **97.27% training accuracy**  
-✔ Uses important property features such as area, bedrooms, bathrooms, house quality, and nearby facilities  
-✔ Includes **Feature Importance Analysis** to understand major price factors  
-✔ Integrates **SHAP Explainability** for transparent model predictions  
-✔ Provides **similar property location mapping** with Google Maps navigation support  
-✔ Developed as an **internship-level real-world machine learning project**
+✔ Uses property features like bedrooms, bathrooms, area, quality, and nearby facilities  
+✔ Includes **Feature Importance Analysis**  
+✔ Includes **SHAP Explainability**  
+✔ Includes **Real Location Navigation Support**
 
-**Note:** Since the model is trained on older historical data, predicted prices may differ from current market values and may not fully represent all cities.
+**Important:**  
+Since the model is trained on historical records, predicted prices may differ from current market values.
 """)
 
 # --------------------------------
 # Sidebar Inputs
 # --------------------------------
-st.sidebar.header("🏡 Enter Property Details")
+st.sidebar.header("🏡 Property Details")
 
-# Basic Info
+# Location Details
+st.sidebar.markdown("### Location Details")
+
+city = st.sidebar.selectbox(
+    "Select City",
+    ["Hyderabad", "Mumbai", "Chennai", "Bangalore", "Delhi"]
+)
+
+area_name = st.sidebar.text_input(
+    "Enter Area / Locality",
+    "Gachibowli"
+)
+
+# Basic Information
 st.sidebar.markdown("### Basic Information")
 
-bedrooms = st.sidebar.selectbox(
-    "Number of Bedrooms",
-    [1,2,3,4,5,6,7,8,9,10]
-)
-
-bathrooms = st.sidebar.selectbox(
-    "Number of Bathrooms",
-    [1,2,3,4,5,6,7,8]
-)
-
-floors = st.sidebar.selectbox(
-    "Number of Floors",
-    [1,2,3,4,5]
-)
+bedrooms = st.sidebar.selectbox("Bedrooms", [1,2,3,4,5,6,7,8,9,10])
+bathrooms = st.sidebar.selectbox("Bathrooms", [1,2,3,4,5,6,7,8])
+floors = st.sidebar.selectbox("Floors", [1,2,3,4,5])
 
 # Property Size
 st.sidebar.markdown("### Property Size")
@@ -93,26 +97,16 @@ lot_area = st.sidebar.number_input(
     step=100
 )
 
-# Property Quality
+# Quality
 st.sidebar.markdown("### Property Quality")
 
-condition = st.sidebar.slider(
-    "Condition Rating (1 = Poor, 5 = Excellent)",
-    1, 5, 3
-)
-
-grade = st.sidebar.slider(
-    "Construction Grade (1 = Low, 13 = Premium)",
-    1, 13, 7
-)
+condition = st.sidebar.slider("House Condition (1-5)", 1, 5, 3)
+grade = st.sidebar.slider("House Grade (1-13)", 1, 13, 7)
 
 # Nearby Facilities
 st.sidebar.markdown("### Nearby Facilities")
 
-schools = st.sidebar.slider(
-    "Schools Nearby",
-    0, 10, 2
-)
+schools = st.sidebar.slider("Schools Nearby", 0, 10, 2)
 
 airport_distance = st.sidebar.number_input(
     "Distance from Airport (km)",
@@ -123,12 +117,12 @@ airport_distance = st.sidebar.number_input(
 
 st.sidebar.markdown("---")
 st.sidebar.info("""
-Fill all details and click **Predict House Price**
-to estimate the property value.
+Enter all details and click **Predict House Price**
+to estimate property value.
 """)
 
 # --------------------------------
-# Input Data
+# Prepare Input
 # --------------------------------
 input_dict = {
     "number of bedrooms": bedrooms,
@@ -144,14 +138,11 @@ input_dict = {
 
 input_data = pd.DataFrame([input_dict])
 
-# Match training columns
 input_data = input_data.reindex(columns=columns, fill_value=0)
-
-# Scale input
 input_scaled = scaler.transform(input_data)
 
 # --------------------------------
-# Prediction Button
+# Predict Button
 # --------------------------------
 if st.button("🔍 Predict House Price"):
 
@@ -169,6 +160,24 @@ if st.button("🔍 Predict House Price"):
         low = prediction * 0.9
         high = prediction * 1.1
         st.info(f"Estimated Range: ₹ {low:,.0f} - ₹ {high:,.0f}")
+
+    # Location Display
+    st.subheader("📍 Selected Location")
+
+    st.write(f"**City:** {city}")
+    st.write(f"**Area / Locality:** {area_name}")
+
+    # Google Maps Link (real user location)
+    full_location = f"{area_name}, {city}"
+    encoded_location = urllib.parse.quote(full_location)
+
+    google_maps_url = (
+        f"https://www.google.com/maps/search/?api=1&query={encoded_location}"
+    )
+
+    st.markdown(
+        f"[🗺 Open Selected Location in Google Maps]({google_maps_url})"
+    )
 
     # Model Performance
     st.subheader("📊 Model Performance")
@@ -194,10 +203,10 @@ if st.button("🔍 Predict House Price"):
         st.pyplot(fig)
 
     except:
-        st.info("Feature importance not available.")
+        st.info("Feature importance unavailable.")
 
     # SHAP Explainability
-    st.subheader("🧠 Why this prediction?")
+    st.subheader("🧠 Prediction Explainability")
 
     try:
         explainer = shap.Explainer(model)
@@ -208,44 +217,7 @@ if st.button("🔍 Predict House Price"):
         st.pyplot(fig)
 
     except:
-        st.info("SHAP explanation currently unavailable.")
-
-    # Similar Property Location
-    st.subheader("📍 Similar Property Location")
-
-    try:
-        data["difference"] = (
-            abs(data["number of bedrooms"] - bedrooms) +
-            abs(data["number of bathrooms"] - bathrooms) +
-            abs(data["living area"] - living_area) +
-            abs(data["lot area"] - lot_area)
-        )
-
-        nearest_house = data.sort_values("difference").head(1)
-
-        latitude = nearest_house["Lattitude"].values[0]
-        longitude = nearest_house["Longitude"].values[0]
-
-        map_data = pd.DataFrame({
-            "lat": [latitude],
-            "lon": [longitude]
-        })
-
-        st.map(map_data)
-
-        st.write(f"📌 Latitude: {latitude}")
-        st.write(f"📌 Longitude: {longitude}")
-
-        google_maps_url = f"https://www.google.com/maps?q={latitude},{longitude}"
-
-        st.markdown(
-            f"[🗺 Open Location in Google Maps]({google_maps_url})"
-        )
-
-        st.success("Click the Google Maps link for directions.")
-
-    except:
-        st.info("Location data not available.")
+        st.warning("SHAP explainability currently unavailable.")
 
 # --------------------------------
 # Dataset Overview
@@ -255,17 +227,17 @@ st.subheader("📂 Dataset Overview")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.metric("Total Houses", len(data))
+    st.metric("Total Properties", len(data))
 
 with col2:
-    st.metric("Features", len(data.columns))
+    st.metric("Total Features", len(data.columns))
 
 with col3:
-    st.metric("Model Type", "XGBoost")
+    st.metric("Model Used", "XGBoost")
 
 # --------------------------------
 # Footer
 # --------------------------------
 st.markdown("---")
-st.markdown("🚀 Built using XGBoost, Streamlit, SHAP, and Google Maps Integration")
+st.markdown("🚀 Built using XGBoost, Streamlit, SHAP, and Google Maps")
 st.markdown("Designed as an Advanced Internship-Level Machine Learning Project")
