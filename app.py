@@ -23,23 +23,23 @@ columns = pickle.load(open("columns.pkl", "rb"))
 data = pd.read_csv("House Price India.csv")
 
 # --------------------------------
-# Header
+# Title
 # --------------------------------
 st.title("🏠 House Price Prediction System")
-st.markdown(
-    """
-    ### Advanced Machine Learning Project using XGBoost  
-    Predict real estate prices with explainable AI and interactive visualization.
-    """
-)
+st.markdown("""
+### Advanced Machine Learning Project using XGBoost  
+Predict real estate prices with explainable AI and smart property analysis.
+""")
 
 # --------------------------------
-# Dataset Note
+# Project Note
 # --------------------------------
-st.warning("""
-⚠ Dataset Notice:
-This project uses an older historical dataset mainly from **Bengaluru, Karnataka**.
-Prices may be lower than current market values and may not reflect all Indian cities.
+st.info("""
+ℹ **Project Note**
+
+This house price prediction system is built using a historical housing dataset.  
+As the dataset is based on older records, predicted prices may differ from current market values.  
+The model is intended for educational and analytical purposes and may not fully represent all real estate markets or cities.
 """)
 
 # --------------------------------
@@ -47,18 +47,79 @@ Prices may be lower than current market values and may not reflect all Indian ci
 # --------------------------------
 st.sidebar.header("🏡 Enter Property Details")
 
-bedrooms = st.sidebar.slider("Bedrooms", 1, 10, 3)
-bathrooms = st.sidebar.slider("Bathrooms", 1, 10, 2)
-living_area = st.sidebar.slider("Living Area (sq ft)", 500, 10000, 1500)
-lot_area = st.sidebar.slider("Lot Area (sq ft)", 500, 20000, 3000)
-floors = st.sidebar.slider("Floors", 1, 5, 2)
-condition = st.sidebar.slider("Condition", 1, 5, 3)
-grade = st.sidebar.slider("House Grade", 1, 13, 7)
-schools = st.sidebar.slider("Schools Nearby", 0, 10, 2)
-airport_distance = st.sidebar.slider("Distance from Airport (km)", 1, 100, 20)
+# Basic Info
+st.sidebar.markdown("### Basic Information")
+
+bedrooms = st.sidebar.selectbox(
+    "Number of Bedrooms",
+    [1,2,3,4,5,6,7,8,9,10]
+)
+
+bathrooms = st.sidebar.selectbox(
+    "Number of Bathrooms",
+    [1,2,3,4,5,6,7,8]
+)
+
+floors = st.sidebar.selectbox(
+    "Number of Floors",
+    [1,2,3,4,5]
+)
+
+# Property Size
+st.sidebar.markdown("### Property Size")
+
+living_area = st.sidebar.number_input(
+    "Living Area (sq ft)",
+    min_value=500,
+    max_value=10000,
+    value=1500,
+    step=100
+)
+
+lot_area = st.sidebar.number_input(
+    "Lot Area (sq ft)",
+    min_value=500,
+    max_value=50000,
+    value=3000,
+    step=100
+)
+
+# Property Quality
+st.sidebar.markdown("### Property Quality")
+
+condition = st.sidebar.slider(
+    "Condition Rating (1 = Poor, 5 = Excellent)",
+    1, 5, 3
+)
+
+grade = st.sidebar.slider(
+    "Construction Grade (1 = Low, 13 = Premium)",
+    1, 13, 7
+)
+
+# Nearby Facilities
+st.sidebar.markdown("### Nearby Facilities")
+
+schools = st.sidebar.slider(
+    "Schools Nearby",
+    0, 10, 2
+)
+
+airport_distance = st.sidebar.number_input(
+    "Distance from Airport (km)",
+    min_value=1,
+    max_value=100,
+    value=20
+)
+
+st.sidebar.markdown("---")
+st.sidebar.info("""
+Fill the property details and click **Predict House Price**  
+to estimate the property value.
+""")
 
 # --------------------------------
-# Input Dictionary
+# Input Data
 # --------------------------------
 input_dict = {
     "number of bedrooms": bedrooms,
@@ -74,10 +135,10 @@ input_dict = {
 
 input_data = pd.DataFrame([input_dict])
 
-# Match columns
+# Match training columns
 input_data = input_data.reindex(columns=columns, fill_value=0)
 
-# Scale
+# Scale data
 input_scaled = scaler.transform(input_data)
 
 # --------------------------------
@@ -87,6 +148,9 @@ if st.button("🔍 Predict House Price"):
 
     prediction = model.predict(input_scaled)[0]
 
+    # --------------------------------
+    # Prediction Result
+    # --------------------------------
     st.subheader("📌 Prediction Result")
 
     col1, col2 = st.columns(2)
@@ -100,7 +164,7 @@ if st.button("🔍 Predict House Price"):
         st.info(f"Estimated Range: ₹ {low:,.0f} - ₹ {high:,.0f}")
 
     # --------------------------------
-    # Model Accuracy
+    # Model Performance
     # --------------------------------
     st.subheader("📊 Model Performance")
 
@@ -146,19 +210,34 @@ if st.button("🔍 Predict House Price"):
     except:
         st.info("SHAP explanation currently unavailable.")
 
-# --------------------------------
-# Property Map
-# --------------------------------
-st.subheader("📍 Property Locations")
+    # --------------------------------
+    # Similar Property Location
+    # --------------------------------
+    st.subheader("📍 Similar Property Location")
 
-map_data = data[['Lattitude', 'Longitude']].rename(
-    columns={
-        'Lattitude': 'lat',
-        'Longitude': 'lon'
-    }
-)
+    try:
+        data["difference"] = (
+            abs(data["number of bedrooms"] - bedrooms) +
+            abs(data["number of bathrooms"] - bathrooms) +
+            abs(data["living area"] - living_area) +
+            abs(data["lot area"] - lot_area)
+        )
 
-st.map(map_data)
+        nearest_house = data.sort_values("difference").head(1)
+
+        map_data = nearest_house[['Lattitude', 'Longitude']].rename(
+            columns={
+                "Lattitude": "lat",
+                "Longitude": "lon"
+            }
+        )
+
+        st.map(map_data)
+
+        st.success("Showing the nearest similar property location.")
+
+    except:
+        st.info("Location data not available.")
 
 # --------------------------------
 # Dataset Overview
@@ -174,7 +253,7 @@ with col2:
     st.metric("Features", len(data.columns))
 
 with col3:
-    st.metric("City Coverage", "Bengaluru")
+    st.metric("Model Type", "XGBoost")
 
 # --------------------------------
 # Footer
