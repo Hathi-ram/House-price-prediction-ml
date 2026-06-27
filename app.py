@@ -141,13 +141,19 @@ try:
 
 except:
     st.info("SHAP explanation not available.")
-
 # ----------------------------
 # Property Location Map
 # ----------------------------
 st.subheader("Property Locations")
 
-st.map(data[['Lattitude', 'Longitude']])
+map_data = data[['Lattitude', 'Longitude']].rename(
+    columns={
+        'Lattitude': 'lat',
+        'Longitude': 'lon'
+    }
+)
+
+st.map(map_data)
 
 # ----------------------------
 # Dataset Overview
