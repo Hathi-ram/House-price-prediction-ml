@@ -23,9 +23,13 @@ It leverages XGBoost Regressor for high prediction accuracy and integrates Expla
 The project demonstrates a complete machine learning pipeline including:
 
 Data preprocessing
+
 Feature engineering
+
 Exploratory Data Analysis (EDA)
+
 Model training
+
 Model deployment using Streamlit
 
 ## Features
@@ -39,20 +43,32 @@ Google Maps integration for property viewing and navigation
 Dataset insights and model performance display.
 
 ## Technologies Used
+
 Python
+
 Pandas
+
 NumPy
+
 Scikit-learn
+
 XGBoost
+
 Streamlit
+
 Matplotlib
+
 SHAP
 
 ## Model Details
 Model Used: XGBoost Regressor
+
 Training Accuracy: 97.27%
+
 Train-Test Split: 80% Training, 20% Testing
+
 Prediction Type: Regression
+
 Scaling: StandardScaler
 
 ## Input Features
@@ -60,13 +76,21 @@ Scaling: StandardScaler
 The model uses the following property features:
 
 Number of Bedrooms
+
 Number of Bathrooms
+
 Number of Floors
+
 Living Area
+
 Lot Area
+
 Condition of House
+
 Grade of House
+
 Number of Schools Nearby
+
 Distance from Airport
 
 ## Installation & Run Locally
@@ -88,9 +112,13 @@ streamlit run app.py
 Add screenshots of:
 
 Home Page
+
 Prediction Result
+
 Feature Importance
+
 SHAP Explainability
+
 Similar Property Location
 
 ## Important Note
