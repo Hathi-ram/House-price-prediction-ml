@@ -131,8 +131,7 @@ The location shown in the application is based on the nearest similar property f
 ## Author
 
 Vislavath Hathiram
-B.Tech – Smart Manufacturing Engineering
-IIITDM Kancheepuram
+B.Tech –IIITDM Kancheepuram
 
 GitHub: Hathi-ram GitHub
 LinkedIn: Vislavath Hathiram LinkedIn
