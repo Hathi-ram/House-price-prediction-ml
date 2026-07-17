@@ -63,7 +63,7 @@ SHAP
 ## Model Details
 Model Used: XGBoost Regressor
 
-Training Accuracy: 97.27%
+Model Accuracy: 97.27%
 
 Train-Test Split: 80% Training, 20% Testing
 
