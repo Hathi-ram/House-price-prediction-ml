@@ -3,135 +3,189 @@
 ## Live Demo
  [https://your-app-link.streamlit.app](https://house-price-prediction-ml-app.streamlit.app/)
 
-## Experience the live House Price Prediction System built with Machine Learning and Streamlit.
+An interactive machine learning web application that predicts house prices based on property characteristics using an **XGBoost Regression model**.
 
-This interactive web application allows users to:
+---
 
-Enter property details such as bedrooms, bathrooms, living area, lot area, and house quality
-Get real-time predicted house prices
-View estimated price ranges
-Analyze feature importance affecting house prices
-Understand predictions using SHAP explainability
-Explore similar property reference locations on Google Maps
-Access direct property location view and navigation support
+## Problem Statement
 
-## Overview
+House prices depend on several factors such as property size, number of bedrooms and bathrooms, construction quality, nearby facilities, and other property characteristics.
 
-This project predicts house prices using advanced machine learning techniques.
-It leverages XGBoost Regressor for high prediction accuracy and integrates Explainable AI (SHAP) for transparent predictions.
+The objective of this project is to build a machine learning system that can:
 
-The project demonstrates a complete machine learning pipeline including:
+* Predict house prices from property details
+* Identify the factors that influence house prices
+* Explain individual model predictions
+* Provide an easy-to-use interface for real-time prediction
 
-Data preprocessing
+---
 
-Feature engineering
+##  Solution
 
-Exploratory Data Analysis (EDA)
+I developed an end-to-end machine learning solution using **XGBoost**.
 
-Model training
+The project includes:
 
-Model deployment using Streamlit
+1. Data preprocessing
+2. Exploratory Data Analysis
+3. Feature preparation
+4. XGBoost model training
+5. Model evaluation
+6. Feature importance analysis
+7. SHAP-based explainability
+8. Streamlit web application deployment
+9. Similar-property location visualization
+10. Google Maps integration
 
-## Features
-Real-time house price prediction
-Interactive web application using Streamlit
-Professional property input interface
-Feature importance visualization
-SHAP model explainability
-Similar property location mapping
-Google Maps integration for property viewing and navigation
-Dataset insights and model performance display.
+---
 
-## Technologies Used
+## Model Performance
 
-Python
+**Model:** XGBoost Regressor
+**Training Accuracy (R²):** **97.27%**
+**Train-Test Split:** 80% Training / 20% Testing
+**Problem Type:** Regression
 
-Pandas
+The model learns relationships between property features and historical house prices to generate price predictions.
 
-NumPy
+---
 
-Scikit-learn
+##  Important Features
 
-XGBoost
+The application allows users to enter:
 
-Streamlit
+* Number of bedrooms
+* Number of bathrooms
+* Number of floors
+* Living area
+* Lot area
+* House condition
+* Construction grade
+* Number of schools nearby
+* Distance from airport
 
-Matplotlib
+---
 
-SHAP
+## Explainable AI
 
-## Model Details
-Model Used: XGBoost Regressor
+A major part of this project is understanding **why the model produces a particular prediction**.
 
-Model Accuracy: 97.27%
+I incorporated:
 
-Train-Test Split: 80% Training, 20% Testing
+* Feature Importance
+* SHAP Explainability
 
-Prediction Type: Regression
+These techniques help identify which property characteristics have the greatest influence on the predicted price and make the machine learning model more transparent.
 
-Scaling: StandardScaler
+---
 
-## Input Features
+##  Location Feature
 
-The model uses the following property features:
+The application also provides a **similar-property reference location** using latitude and longitude available in the dataset.
 
-Number of Bedrooms
+Users can:
 
-Number of Bathrooms
+* View the reference property on the map
+* Open the location in Google Maps
+* Request directions when a valid route is available
 
-Number of Floors
+The location represents a similar property from the available dataset and is **not a recommendation of a property for purchase**.
 
-Living Area
+---
 
-Lot Area
+##  Web Application
 
-Condition of House
+The model is deployed using **Streamlit**, allowing users to interact with the trained model without running Python code.
 
-Grade of House
+Users can enter property information and receive:
 
-Number of Schools Nearby
+**Input → ML Model → Predicted Price → Explanation → Location Reference**
 
-Distance from Airport
+---
 
-## Installation & Run Locally
+## Important Dataset Limitation
 
-Clone the repository:
+This project uses an **older historical housing dataset**.
 
-git clone https://github.com/Hathi-ram/house-price-prediction-ml.git
+Therefore:
 
-Install dependencies:
+* Predicted prices may be lower or different from current market prices.
+* The model should not be treated as a real-time property valuation system.
+* The available location information depends on the original dataset.
+* The model may not accurately represent every city or current real-estate market.
 
+This limitation was identified during project development and is clearly communicated in the deployed application.
+
+---
+
+## 🛠 Technologies
+
+* Python
+* Pandas
+* NumPy
+* Scikit-learn
+* XGBoost
+* Matplotlib
+* SHAP
+* Streamlit
+
+---
+
+##  Project Structure
+
+```text
+house-price-prediction-ml/
+│
+├── app.py
+├── model.pkl
+├── scaler.pkl
+├── columns.pkl
+├── House Price India.csv
+├── requirements.txt
+└── README.md
+```
+
+---
+
+##  Run Locally
+
+Install the required packages:
+
+```bash
 pip install -r requirements.txt
+```
 
-Run the Streamlit app:
+Run the application:
 
+```bash
 streamlit run app.py
+```
 
-## Screenshots
+---
 
-Add screenshots of:
+##  Key Learning Outcomes
 
-Home Page
+Through this project, I gained practical experience in:
 
-Prediction Result
+* Data preprocessing
+* Exploratory Data Analysis
+* Regression modeling
+* XGBoost
+* Model evaluation
+* Feature importance
+* SHAP Explainable AI
+* Streamlit development
+* Model deployment
+* Handling real-world dataset limitations
+* Integrating machine learning with location-based visualization
 
-Feature Importance
+---
 
-SHAP Explainability
+##  Author
 
-Similar Property Location
+**Vislavath Hathiram**
+B.Tech – Smart Manufacturing Engineering
+IIITDM Kancheepuram
 
-## Important Note
-
-This model is trained on historical housing data.
-Predicted prices may differ from current market values.
-
-The location shown in the application is based on the nearest similar property from the dataset and is provided for reference purposes only.
-
-## Author
-
-Vislavath Hathiram
-B.Tech –IIITDM Kancheepuram
-
-GitHub: Hathi-ram GitHub
-LinkedIn: Vislavath Hathiram LinkedIn
+GitHub: https://github.com/Hathi-ram
+LinkedIn: https://linkedin.com/in/vislavathhathiram
