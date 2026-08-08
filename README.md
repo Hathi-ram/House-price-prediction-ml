@@ -38,6 +38,10 @@ The project includes:
 10. Google Maps integration
 
 ---
+## Methodology
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/d3c626a1-d8d0-415a-93a3-f684cf41af0c" />
+
 
 ## Model Performance
 
